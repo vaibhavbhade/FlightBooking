@@ -1,24 +1,25 @@
 package com.atyeti.flightbooking.model;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="FLIGHT_DETAILS")
 public class FlightDetails {
 
-	@Column(name = 
-			"flight_id")
+
 	@GeneratedValue
 	@Id
 	private long id;
@@ -27,12 +28,20 @@ public class FlightDetails {
 	
 	private String price;
 	
-	private Date flightDepartureDate;
+	private LocalDate flightDepartureDate;
 	
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "flightDetails", cascade = CascadeType.ALL)
-	  private Set<Flight> flights = new HashSet<Flight>();
-
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JoinColumn(name="flight_id")
+	private Flight flight;
+	
+	@OneToMany(mappedBy = "flightDetails")
+	private List<TicketInfo> ticketInfoList;
+	
+	
+	
+	 
 	public FlightDetails() {
 		super();
 		// TODO Auto-generated constructor stu b
@@ -62,21 +71,31 @@ public class FlightDetails {
 		this.price = price;
 	}
 
-	public Date getFlightDepartureDate() {
+	public LocalDate getFlightDepartureDate() {
 		return flightDepartureDate;
 	}
 
-	public void setFlightDepartureDate(Date flightDepartureDate) {
+	public void setFlightDepartureDate(LocalDate flightDepartureDate) {
 		this.flightDepartureDate = flightDepartureDate;
 	}
 
-	public Set<Flight> getFlights() {
-		return flights;
+	public Flight getFlight() {
+		return flight;
 	}
 
-	public void setFlights(Set<Flight> flights) {
-		this.flights = flights;
+	public void setFlight(Flight flight) {
+		this.flight = flight;
 	}
+
+	public List<TicketInfo> getTicketInfoList() {
+		return ticketInfoList;
+	}
+
+	public void setTicketInfoList(List<TicketInfo> ticketInfoList) {
+		this.ticketInfoList = ticketInfoList;
+	}
+
+
 	
 	
 	

@@ -1,45 +1,62 @@
 package com.atyeti.flightbooking.controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.atyeti.flightbooking.model.Flight;
 import com.atyeti.flightbooking.model.FlightDetails;
 import com.atyeti.flightbooking.repo.FlightDetailsRepo;
+import com.atyeti.flightbooking.repo.FlightRepository;
 
-@Controller
+@RestController
 public class HomeController {
 
 	@Autowired
 	private FlightDetailsRepo flightDetailsRepo;
 
-	@RequestMapping("/checkFlight")
-	public List<Flight> getFlight(@RequestParam("from") String from,@RequestParam("to") String to) {
+	@Autowired
+	private FlightRepository flightRepository;
 
-		List<Flight> flightList=new ArrayList<>(); 
-		
-		FlightDetails flightDetails = flightDetailsRepo.findByflightDepartureDate(LocalDate.now());
+	@GetMapping("/checkFlight")
+	public Map<Flight, FlightDetails> getFlight(String from, String to) {
 
-		Set<Flight> flightSet = flightDetails.getFlights();
+		Map<Flight, FlightDetails> finalFlightMap = new HashMap<>();
 
-		for (Flight flight : flightSet) {
-			if (flight.getFromLocation().equals(from) && flight.getToLocation().equals(to)) {
+		LocalDate date = LocalDate.now();
 
-				flightList.add(flight);
+		List<Flight> flightList = flightRepository.getFlight(from, to);
+
+		for (Flight flight : flightList) {
+
+			Set<FlightDetails> flightDetailsSet = flight.getFlightDetails();
+
+			for (FlightDetails Flightdetails : flightDetailsSet) {
+
+				if (Flightdetails.getFlightDepartureDate().equals(date)) {
+
+					finalFlightMap.put(flight, Flightdetails);
+				}
+
 			}
 
 		}
 
-		System.out.println("flightList  :: "+flightList.size());
-		return flightList;
+		for (Entry<Flight, FlightDetails> flight : finalFlightMap.entrySet()) {
+
+			System.out.println(flight.getKey().getId() + " :: " + flight.getValue().getFlightDepartureDate());
+
+		}
+
+		System.out.println("hhhhh");
+		return finalFlightMap;
 
 	}
 

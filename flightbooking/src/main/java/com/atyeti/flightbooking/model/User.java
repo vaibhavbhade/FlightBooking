@@ -1,9 +1,12 @@
 package com.atyeti.flightbooking.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -19,6 +22,11 @@ public class User {
     private String emailId;
 	private String userName;
 	private String password;
+	
+	
+	
+	@OneToMany(mappedBy = "user")
+	private List<TicketInfo> ticketInfoList;
 	
 	
 	
@@ -117,6 +125,18 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNo=" + phoneNo
 				+ ", emailId=" + emailId + ", userName=" + userName + ", password=" + password + "]";
+	}
+
+
+
+	public List<TicketInfo> getTicketInfoList() {
+		return ticketInfoList;
+	}
+
+
+
+	public void setTicketInfoList(List<TicketInfo> ticketInfoList) {
+		this.ticketInfoList = ticketInfoList;
 	}
 	
 	

@@ -1,6 +1,8 @@
 package com.atyeti.flightbooking.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,8 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -18,7 +19,10 @@ public class Flight {
 	
 	@Id
 	@GeneratedValue
-	@Column(name="airline_id")
+	@Column(name="flight_id")
+	private long id;
+	
+	
 	private long airlineid;
 	private String airlineName;
 	private String fromLocation;
@@ -27,9 +31,10 @@ public class Flight {
 	private Date arrivalTime;
 	private String totalSeats;
 	
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@JoinColumn(name="flight_id")
-	private FlightDetails flightDetails;
+	  @OneToMany(fetch = FetchType.EAGER, mappedBy = "flight", cascade = CascadeType.ALL)
+	  private Set<FlightDetails> flightDetails = new HashSet<FlightDetails>();
+	
+	
 
 	public Flight() {
 		super();
@@ -92,13 +97,22 @@ public class Flight {
 		this.totalSeats = totalSeats;
 	}
 
-	public FlightDetails getFlightDetails() {
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public Set<FlightDetails> getFlightDetails() {
 		return flightDetails;
 	}
 
-	public void setFlightDetails(FlightDetails flightDetails) {
+	public void setFlightDetails(Set<FlightDetails> flightDetails) {
 		this.flightDetails = flightDetails;
 	}
+
 	
 	
 	
