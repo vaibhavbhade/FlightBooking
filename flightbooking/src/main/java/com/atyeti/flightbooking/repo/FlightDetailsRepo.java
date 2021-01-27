@@ -1,7 +1,6 @@
 package com.atyeti.flightbooking.repo;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;

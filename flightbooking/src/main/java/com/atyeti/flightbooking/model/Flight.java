@@ -20,7 +20,7 @@ public class Flight {
 	@Id
 	@GeneratedValue
 	@Column(name="flight_id")
-	private long id;
+	private Long id;
 	
 	
 	private long airlineid;

@@ -1,22 +1,39 @@
 package com.atyeti.flightbooking.controller;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.atyeti.flightbooking.model.Flight;
 import com.atyeti.flightbooking.model.FlightDetails;
+import com.atyeti.flightbooking.model.Role;
+import com.atyeti.flightbooking.model.TicketInfo;
+import com.atyeti.flightbooking.model.User;
+import com.atyeti.flightbooking.model.UserPayment;
+import com.atyeti.flightbooking.model.UserRole;
 import com.atyeti.flightbooking.repo.FlightDetailsRepo;
 import com.atyeti.flightbooking.repo.FlightRepository;
+import com.atyeti.flightbooking.repo.TicketInfoRepository;
+import com.atyeti.flightbooking.repo.UserPaymentRepository;
+import com.atyeti.flightbooking.repo.UserRepo;
+import com.atyeti.flightbooking.service.UserService;
 
-@RestController
+@Controller
 public class HomeController {
 
 	@Autowired
@@ -24,13 +41,16 @@ public class HomeController {
 
 	@Autowired
 	private FlightRepository flightRepository;
-
+	
+	
 	@GetMapping("/checkFlight")
-	public Map<Flight, FlightDetails> getFlight(String from, String to) {
+	public String getFlight(@RequestParam("from") String from,@RequestParam("to") String to,@RequestParam("Depdate") String date ,Model model,@RequestParam(value="seatsNotAvalible" ,required = false)boolean seatsNotAvalible) {
 
+		System.out.println(date);
+		
 		Map<Flight, FlightDetails> finalFlightMap = new HashMap<>();
 
-		LocalDate date = LocalDate.now();
+		//LocalDate dates = LocalDate.now();
 
 		List<Flight> flightList = flightRepository.getFlight(from, to);
 
@@ -56,8 +76,47 @@ public class HomeController {
 		}
 
 		System.out.println("hhhhh");
-		return finalFlightMap;
+
+		model.addAttribute("finalFlightMap", finalFlightMap);
+
+		
+		if(seatsNotAvalible==true) {
+			model.addAttribute("seatsNotAvalible", true);
+		}
+		return "checkFlight";
 
 	}
 
-}
+	@GetMapping("/")
+	public String homePage(Model model) {
+		List<String> fromList = new ArrayList<>();
+		List<String> toFlightList = new ArrayList<>();
+
+		List<Flight> flightList = (List<Flight>) flightRepository.findAll();
+		String from = "";
+		String to = "";
+		for (Flight flight : flightList) {
+			if (!from.equals(flight.getFromLocation())) {
+				fromList.add(flight.getFromLocation());
+				from = flight.getFromLocation();
+			}
+
+			if (!to.equals(flight.getToLocation())) {
+				toFlightList.add(flight.getToLocation());
+				to = flight.getToLocation();
+			}
+
+		}
+
+		model.addAttribute("flightList", flightList);
+		model.addAttribute("fromList", fromList);
+		model.addAttribute("toFlightList", toFlightList);
+
+		return "home";
+	}
+
+	
+
+	}
+
+	

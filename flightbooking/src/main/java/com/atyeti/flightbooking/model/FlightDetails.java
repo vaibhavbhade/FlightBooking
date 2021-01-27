@@ -22,13 +22,13 @@ public class FlightDetails {
 
 	@GeneratedValue
 	@Id
-	private long id;
+	private Long id;
 	
-	private String availableSeats;
+	private int availableSeats;
 	
-	private String price;
+	private int price;
 	
-	private LocalDate flightDepartureDate;
+	private String flightDepartureDate;
 	
 	
 	@JsonIgnore
@@ -55,27 +55,27 @@ public class FlightDetails {
 		this.id = id;
 	}
 
-	public String getAvailableSeats() {
+	public int getAvailableSeats() {
 		return availableSeats;
 	}
 
-	public void setAvailableSeats(String availableSeats) {
+	public void setAvailableSeats(int availableSeats) {
 		this.availableSeats = availableSeats;
 	}
 
-	public String getPrice() {
+	public int getPrice() {
 		return price;
 	}
 
-	public void setPrice(String price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 
-	public LocalDate getFlightDepartureDate() {
+	public String getFlightDepartureDate() {
 		return flightDepartureDate;
 	}
 
-	public void setFlightDepartureDate(LocalDate flightDepartureDate) {
+	public void setFlightDepartureDate(String flightDepartureDate) {
 		this.flightDepartureDate = flightDepartureDate;
 	}
 
